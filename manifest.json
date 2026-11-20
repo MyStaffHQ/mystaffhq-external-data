@@ -6,16 +6,6 @@
   "provenance_caveat": "These four files were carried forward from an existing mystaffhq-api checkout rather than regenerated during staging, so the GDAL build that actually produced the two ogr2ogr outputs is not known. The version above is the one present on the staging machine, recorded for reference only. The refresh procedure below stamps the real value; the first refresh supersedes this caveat.",
   "files": [
     {
-      "path": "geo/natural_earth/ne_10m_admin_0_countries.geojson",
-      "sha256": "648e1c542853ba41905ac763d7490480227307925c886964a701c2077d2be97f",
-      "bytes": 25375113,
-      "upstream_url": "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries.zip",
-      "upstream_artefact": "zip (shapefile)",
-      "conversion": "ogr2ogr -f GeoJSON -t_srs EPSG:4326 <out> <shp>",
-      "stable_upstream_artefact": true,
-      "drift_risk": "highest - the upstream path carries no version segment, so a republish is silent"
-    },
-    {
       "path": "geo/ons/lad_dec_2024_uk.geojson",
       "sha256": "decfd01f18d5ab5095cb8bb95f43329e57fcc39a2aedf914ec036afb5e72b9ea",
       "upstream_url": "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Local_Authority_Districts_December_2024_Boundaries_UK_BGC/FeatureServer/0/query?where=1%3D1&outFields=LAD24CD,LAD24NM,LAD24NMW&outSR=4326&f=geojson&resultRecordCount=2000",
@@ -44,6 +34,42 @@
       "stable_upstream_artefact": true,
       "drift_risk": "high - a master branch ref on one individual's repository, not a government endpoint",
       "bytes": 1746989
+    },
+    {
+      "path": "geo/overture/countries_land.geojsonl.gz",
+      "sha256": "32fcd834e040c0072a4f7c8366bdbc69c998f9901078906d1bf7ce74a35805e0",
+      "bytes": 47043749,
+      "upstream_url": "s3://overturemaps-us-west-2/release/2026-11-18.0/theme=divisions/type=division_area/",
+      "upstream_artefact": "Overture Maps release 2026-11-18.0, division_area rows with subtype country or dependency and class land (272 rows)",
+      "drift_risk": "none while the pin holds - a release is immutable, but it is removed from the public bucket after it is superseded, so this mirror is the durable copy",
+      "staged_at": "2026-11-20",
+      "licence": "ODbL 1.0, © OpenStreetMap contributors",
+      "conversion": "manage.py extract_overture_sources in MyStaffHQ/mystaffhq-api (DuckDB 2.0.0 spatial); gzipped GeoJSON, one feature per line",
+      "stable_upstream_artefact": false
+    },
+    {
+      "path": "geo/overture/seam_lakes.geojsonl.gz",
+      "sha256": "2f4059139a7e8d1e521b6352fcacf4d67cfc3672ca7458f873d10e8b3d1002cc",
+      "bytes": 16415731,
+      "upstream_url": "s3://overturemaps-us-west-2/release/2026-11-18.0/theme=base/type=water/",
+      "upstream_artefact": "Overture Maps release 2026-11-18.0, water rows with subtype lake or reservoir that intersect the repaired border zones",
+      "drift_risk": "as the countries file",
+      "staged_at": "2026-11-20",
+      "licence": "ODbL 1.0, © OpenStreetMap contributors",
+      "conversion": "manage.py extract_overture_sources in MyStaffHQ/mystaffhq-api (DuckDB 2.0.0 spatial); gzipped GeoJSON, one feature per line",
+      "stable_upstream_artefact": false
+    },
+    {
+      "path": "geo/osm/seam_land.geojsonl.gz",
+      "sha256": "225db170fef9b692b5e6a2d393f202d5fcace92b40a085d3537248f2810a44b8",
+      "bytes": 6040561,
+      "upstream_url": "https://osmdata.openstreetmap.de/download/land-polygons-split-4326.zip",
+      "upstream_artefact": "OpenStreetMap land polygons dated 2026-11-18, those within 0.25 degrees of both sides of a repaired border, plus the band itself as kind=coverage rows",
+      "drift_risk": "highest - the upstream URL is unversioned and rebuilt daily, so this mirror is the only pin",
+      "staged_at": "2026-11-20",
+      "licence": "ODbL 1.0, © OpenStreetMap contributors",
+      "conversion": "manage.py extract_overture_sources in MyStaffHQ/mystaffhq-api (DuckDB 2.0.0 spatial); gzipped GeoJSON, one feature per line",
+      "stable_upstream_artefact": false
     }
   ]
 }
