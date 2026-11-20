@@ -16,7 +16,7 @@ Four properties, all required:
 ## Layout
 
 ```
-geo/<source>/<file>.geojson   one directory per domain; geo/ is the only tenant today
+geo/<source>/<file>           one directory per domain; geo/ is the only tenant today
 geo/LICENSING.md              redistribution notices, per directory
 manifest.json                 flat, at the root: sha256, upstream URL, conversion, drift risk
 ```
@@ -31,9 +31,13 @@ The converted files are what the seed actually eats. Freezing them is what makes
 
 Provenance is preserved in `manifest.json` rather than by storing a second copy of everything.
 
+## The OpenStreetMap files
+
+`geo/overture/` and `geo/osm/` hold gzipped GeoJSON, one feature per line: country outlines and border lakes from one Overture Maps release, and OpenStreetMap land polygons along the same borders. They are built by `extract_overture_sources` in `mystaffhq-api`, not by `--upstream`, and are compressed because the countries file is 146 MB unpacked. Licence: ODbL 1.0, see `geo/LICENSING.md`.
+
 ## Why public
 
-`fetch_geo_source_data` must stay credential-free. Every developer and every CI runner does an unauthenticated GET; the CI test job holds no credentials at all. A private repository or an S3 bucket would make seeding require a token or an AWS role. All four licences permit redistribution and there is nothing here worth hiding.
+`fetch_geo_source_data` must stay credential-free. Every developer and every CI runner does an unauthenticated GET; the CI test job holds no credentials at all. A private repository or an S3 bucket would make seeding require a token or an AWS role. Every licence here permits redistribution and there is nothing here worth hiding.
 
 ## Branch protection is load-bearing
 
@@ -48,7 +52,7 @@ Refreshing is a deliberate act, never automatic.
    uv run ./manage.py fetch_geo_source_data --upstream
    ```
    This hits the original endpoints, handles the zips, runs `ogr2ogr`, and verifies download checksums for the three sources that have a stable artefact.
-2. Copy the four converted files here, at the same relative paths.
+2. Copy the converted files here, at the same relative paths.
 3. Recompute checksums and update `manifest.json`:
    ```bash
    find geo -name '*.geojson' | sort | xargs sha256sum
